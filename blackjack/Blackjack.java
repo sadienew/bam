@@ -31,28 +31,29 @@ public class Blackjack {
         //deal out cards to players, and get bets for each player
          for(int i=0;i<noPlayers;i++)
          {
-             Card [] dealCards = {myDeck.dealCard(),myDeck.dealCard()};
-             players[i] = new Player(dealCards,placeBets(i, 50, 500),0);
+             Card [] dealCards = {myDeck.dealCard(),myDeck.dealCard()};             
+             players[i] = new Player(dealCards,placeBets(i, 50, 500),0);             
+             
              //calculate value of player's hand
              int sum = players[i].calcTotal();
              players[i].value = sum;
              players[i].winnings = 0;
             
-         }  
+         }
          
          //deal cards out to dealer
-         Card [] dealToDealer={myDeck.dealCard()};
-         Dealer dealer = new Dealer(dealToDealer,0);
-         //calculate value of dealer's hand
+        Card [] dealToDealer={myDeck.dealCard()};
+        Dealer dealer = new Dealer(dealToDealer,0);
+        
+        //calculate value of dealer's hand
          dealer.value=dealer.calcTotal();
 
         //print player and dealer info
          printPlayerInfo(players, dealer);
          System.out.println("");
-        
        
          //determine if insurance bet is a possibility
-        if(dealer.cards[0].face == "Ace")
+        if(dealer.cards[0].face.equals("Ace"))
         {
             //call insurance function
             insurance(players, dealer, myDeck);
@@ -61,11 +62,15 @@ public class Blackjack {
         {
             //deal second card to dealer.
             dealer.cards = addElement(dealer.cards, myDeck.dealCard());
-        
+            
             //print out dealer's hand
             System.out.printf("Dealer's hand: %s\n",dealer.toString());
         }
          
+        
+        players = split(players, myDeck);
+        
+        
          //ask user if they want their ace to have a value of 1 or 11
          for(int i=0;i<players.length;i++)
          {
@@ -73,7 +78,7 @@ public class Blackjack {
              for(int j=0; j<players[i].cards.length;j++)
              {
                  //if players have an ace...
-                if(players[i].cards[j].face == "Ace" )
+                if(players[i].cards[j].face.equals("Ace" ))
                 {
                     //prompt player for value of ace
                     Scanner scan = new Scanner(System.in);
@@ -94,37 +99,15 @@ public class Blackjack {
              }   
          }
          
-         System.out.println("");
+
+         
+        System.out.println("");
         //reprint players info with new values for aces
         printPlayerInfo(players, dealer);
         System.out.println("");
         
         //if dealer has a blackjack
-        if(dealer.value == 21)
-        {
-            //check to see if any of the players also have blackjack
-            for(int i=0;i<players.length;i++)
-            {
-                //if they do, this results in a push
-                if(players[i].value == 21)
-                {
-                    //push
-                    //their original bet is returned to them
-                    players[i].winnings += players[i].bet;
-                }
-                //if theirs does not equal 21, then they lose
-                else
-                {
-                    //and no money is returned to them
-                    players[i].winnings += 0;
-                }
-            }
-            
-            /*********************************************************
-             **************GAME OVER????*****************************
-             *********************************************************/
-        }
-        
+        isDealerBlackJack(players, dealer);        
         
         //start stand or hit for each player
         for(int i=0;i<players.length;i++)
@@ -157,26 +140,6 @@ public class Blackjack {
             
             System.out.printf("Player %d's info= %s\n",i+1,players[i].toString());
         }
-        
-        
-        
-        
-        /***********************************************************
-         *check to see if player or dealer has a hand value 21
-         ***********************************************************
-         for(int i=0;i<players.length;i++)
-         {
-            if(dealer.value == 21 && players[i].value == 21)
-            {
-                System.out.print("Player %d and the dealer both have blackjack. (push)");
-            }
-            else if(players[i].value == 21 && dealer.value != 21)
-            {
-                System.out.printf("Player %d has a blackjack!!\n", i+1);
-                
-            }
-         }
-         ************************************************************/
         
     }
     
@@ -304,6 +267,64 @@ public class Blackjack {
         return newArray;
     }
     
-
+    public static Player [] addPlayer(Player [] original, Player... newPlayers)
+    {
+        Player [] newArray = new Player[original.length+1];
+        System.arraycopy(original, 0, newArray, 0, original.length);
+        System.arraycopy(newPlayers, 0, newArray, original.length, newPlayers.length);
+        return newArray;
+    }
     
+    public static void isDealerBlackJack(Player [] players, Dealer dealer)
+    {
+        if(dealer.value == 21)
+        {
+            //check to see if any of the players also have blackjack
+            for(int i=0;i<players.length;i++)
+            {
+                //if they do, this results in a push
+                if(players[i].value == 21)
+                {
+                    //push
+                    //their original bet is returned to them
+                    players[i].winnings += players[i].bet;
+                    System.out.printf("Player %d's winnings: $%s",i+1, players[i].winnings);
+                }
+                //if theirs does not equal 21, then they lose
+                else
+                {
+                    //and no money is returned to them
+                    players[i].winnings += 0;
+                    System.out.printf("Player %d's winnings: $%s",i+1, players[i].winnings);
+                }
+            }
+            System.exit(0);
+        }
+    }
+    
+    
+    //split the player's hand
+    public static Player [] split(Player [] players, DeckOfCards myDeck)
+    {
+        for(int i=0;i<players.length;i++)
+        {
+            //if the player's face values 
+            if(players[i].cards[0].face.equals(players[i].cards[1].face))
+            {
+                Scanner scanner = new Scanner(System.in);
+                System.out.printf("Player %d, would you like to split your hand?\nY=yes N=no", i+1);
+                String ans = scanner.nextLine();
+                
+                if(ans.toUpperCase().equals("Y"));
+                {
+                    Card [] hand = {players[i].cards[1],myDeck.dealCard()};
+                    Player newPlayer = new Player(hand,players[i].bet,0);
+                    newPlayer.value = newPlayer.calcTotal();
+                    players = addPlayer(players,newPlayer);
+                    players[i].cards[1] = myDeck.dealCard();
+                }
+            }
+        }
+        return players;
+    }
 }
