@@ -11,14 +11,33 @@ package blackjack;
  */
 public class Player {
     public Card [] cards;
-    private final int bet;
-    public int total;
+    public int bet;
+    public int value;
+    public int insuranceBet;
+    public int winnings;
     
-    public Player(Card [] cards, int bet, int total)
+    public Player(Card [] cards, int bet, int value)
     {
         this.cards = cards;
         this.bet = bet;
-        this.total = total;
+        this.value = value;
+    }
+    
+    public Player(Card [] cards, int bet, int value, int insuranceBet)
+    {
+        this.cards= cards;
+        this.bet = bet;
+        this.value = value;
+        this.insuranceBet = insuranceBet;
+    }
+    
+    public Player(Card [] cards, int bet, int value, int insuranceBet, int winnings)
+    {
+        this.cards= cards;
+        this.bet = bet;
+        this.value = value;
+        this.insuranceBet = insuranceBet;
+        this.winnings = winnings;
     }
     
     public String toString()
@@ -28,7 +47,8 @@ public class Player {
         {
             string+="Card "+ (i+1)+"= " +cards[i]+ ", ";
         }
-        return string + ", bet= $" + bet + " Total= " + total;
+        value=calcTotal();
+        return string + ", bet= $" + bet + " Value of Hand= " + value;
     }
     
     public int calcTotal()
@@ -36,7 +56,7 @@ public class Player {
         int sum=0;
         for(int i=0; i<cards.length;i++)
         {
-            sum+=cards[i].value;
+            sum+=cards[i].points;
         }
         return sum;
     }

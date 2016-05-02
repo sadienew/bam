@@ -36,7 +36,7 @@ public class DeckOfCards {
         {
             deck[i]= new Card(suits[i/13],faces[i%13], 0);
             int value = deck[i].getValue();
-            deck[i].value = value;
+            deck[i].points = value;
             
         }
         

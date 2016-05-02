@@ -11,63 +11,64 @@ package blackjack;
  */
 public class Card {
     private final String suit;
-    public final String face;
-    public int value;
+    public String face;
+    //public final String face;
+    public int points;
 
-    public Card(String suit, String face, int value)
+    public Card(String suit, String face, int points)
     {
         this.suit = suit;
 	this.face = face;
-        this.value = value;
+        this.points = points;
     }
     
     public int getValue()
     {
         if(face == "Ace")
         {
-            value= 11;
+            points= 11;
         }
         else if(face == "Two")
         {
-            value = 2;
+            points = 2;
         }
         else if(face == "Three")
         {
-            value = 3;
+            points = 3;
         }
         else if(face == "Four")
         {
-            value = 4;
+            points = 4;
         }
         else if(face == "Five")
         {
-            value = 5;
+            points = 5;
         }
         else if(face == "Six")
         {
-            value = 6;
+            points = 6;
         }
         else if(face == "Seven")
         {
-            value = 7;
+            points = 7;
         }else if(face == "Eight")
         {
-            value = 8;
+            points = 8;
         }else if(face == "Nine")
         {
-            value = 9;
+            points = 9;
         }
         else
         {
-            value = 10;
+            points = 10;
         }
-        return value;
+        return points;
     }
 
     //override toString()
     public String toString()
     {
-	return face + " of " + suit + ". Value= " + value;
+	return face + " of " + suit + ". Points= " + points;
     }
     
 }

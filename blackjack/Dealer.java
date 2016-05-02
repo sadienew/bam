@@ -11,12 +11,12 @@ package blackjack;
  */
 public class Dealer {
     public Card [] cards;
-    public int total;
+    public int value;
     
-    public Dealer(Card [] cards, int total)
+    public Dealer(Card [] cards, int value)
     {
         this.cards = cards;
-        this.total = total;
+        this.value = value;
     }
     
     public String toString()
@@ -26,7 +26,8 @@ public class Dealer {
         {
             string+="Card "+ (i+1)+"= " +cards[i]+ ", ";
         }
-        return string + " Total= " + total;
+        value = calcTotal();
+        return string + " Value of Hand= " + value;
     }
     
     public int calcTotal()
@@ -34,7 +35,7 @@ public class Dealer {
         int sum=0;
         for(int i=0; i<cards.length;i++)
         {
-            sum+=cards[i].value;
+            sum+=cards[i].points;
         }
         return sum;
     }
