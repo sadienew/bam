@@ -13,30 +13,13 @@ public class Player {
     public Card [] cards;
     public int bet;
     public int value;
-    public int insuranceBet;
     public int winnings;
     
-    public Player(Card [] cards, int bet, int value)
-    {
-        this.cards = cards;
-        this.bet = bet;
-        this.value = value;
-    }
-    
-    public Player(Card [] cards, int bet, int value, int insuranceBet)
+    public Player(Card [] cards, int bet, int value, int winnings)
     {
         this.cards= cards;
         this.bet = bet;
         this.value = value;
-        this.insuranceBet = insuranceBet;
-    }
-    
-    public Player(Card [] cards, int bet, int value, int insuranceBet, int winnings)
-    {
-        this.cards= cards;
-        this.bet = bet;
-        this.value = value;
-        this.insuranceBet = insuranceBet;
         this.winnings = winnings;
     }
     

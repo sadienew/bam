@@ -24,37 +24,37 @@ public class Card {
     
     public int getValue()
     {
-        if(face == "Ace")
+        if(face.equals("Ace"))
         {
             points= 11;
         }
-        else if(face == "Two")
+        else if(face.equals("Two"))
         {
             points = 2;
         }
-        else if(face == "Three")
+        else if(face.equals("Three"))
         {
             points = 3;
         }
-        else if(face == "Four")
+        else if(face.equals("Four"))
         {
             points = 4;
         }
-        else if(face == "Five")
+        else if(face.equals("Five"))
         {
             points = 5;
         }
-        else if(face == "Six")
+        else if(face.equals("Six"))
         {
             points = 6;
         }
-        else if(face == "Seven")
+        else if(face.equals("Seven"))
         {
             points = 7;
-        }else if(face == "Eight")
+        }else if(face.equals("Eight"))
         {
             points = 8;
-        }else if(face == "Nine")
+        }else if(face.equals("Nine"))
         {
             points = 9;
         }
