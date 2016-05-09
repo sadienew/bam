@@ -111,7 +111,7 @@ public class Blackjack {
                 }
                 else if(player.value == 21)
                 {
-                    System.out.println("Player %d has a blackjack!!\n");
+                    System.out.println("Player has a blackjack!!\n");
                     break;
                 }
                                 
@@ -212,14 +212,14 @@ public class Blackjack {
                 {
                     //push
                     //their original bet is returned to them
-                    player.winnings += player.bet;
+                    player.winnings =0;
                     System.out.printf("Player's winnings: $%s\n", player.winnings);
                 }
                 //if theirs does not equal 21, then they lose
                 else
                 {
                     //and no money is returned to them
-                    player.winnings += 0;
+                    player.winnings -=player.bet;
                     System.out.printf("Player's winnings: $%s\n", player.winnings);
                 }
             System.exit(0);    
