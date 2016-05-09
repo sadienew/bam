@@ -1,7 +1,4 @@
 # blackjackMain.rb
-cards = []
-suits = ["clubs", "diamonds", "spades", "hearts"]
-facecards = ["K", "Q", "J", "A"]
 choice = nil
 @player = []
 @dealer = []
@@ -27,6 +24,36 @@ class Card
 	end
 end
 
+class Deck
+	attr_accessor :deck
+	
+	def initialize
+		@cards = []
+		@suits = ["clubs", "diamonds", "spades", "hearts"]
+		@facecards = ["K", "Q", "J", "A"]
+		
+		@suits.each do |suit|
+			(2..10).each do |number|
+				val = value(number)
+				@cards << Card.new(suit, number, val)
+			end
+	
+			@facecards.each do |face|
+				val = value(face)
+				@cards << Card.new(suit, face, val)
+			end
+		end
+	
+		@deck = @cards.shuffle
+		return @deck
+	end
+	
+	#Draw card
+	def hit
+		return @deck.shift
+	end
+end
+
 #Determine value of each card
 def value(val)
 	if val == "K"
@@ -42,10 +69,7 @@ def value(val)
 	end
 end
 
-#Draw card
-def hit
-	return @deck.shift
-end
+
 
 #Determine if hand is a blackjack
 def isBlackjack(hand)
@@ -77,28 +101,12 @@ def turnPlayerHand(hand)
 	puts score
 end
 
-
-
-
-#Build unshuffled deck of cards
-suits.each do |suit|
-	(2..10).each do |number|
-		val = value(number)
-		cards << Card.new(suit, number, val)
-	end
-	
-	facecards.each do |face|
-		val = value(face)
-		cards << Card.new(suit, face, val)
-	end
-end
-
-#shuffle deck
-@deck = cards.shuffle
+#create deck
+@deck = Deck.new
 
 #Initial hand of player and dealer
-2.times{@player << hit}
-2.times{@dealer << hit}
+2.times{@player << @deck.hit}
+2.times{@dealer << @deck.hit}
 
 #Show player's hand
 turnPlayerHand(@player)
@@ -109,7 +117,7 @@ choice = gets
 #Keep hitting if player wants to
 while choice.chomp == "hit" do
 	# << pushes onto a stack
-	@player << hit
+	@player << @deck.hit
 	turnPlayerHand(@player)
 	
 	puts "Would you like to hit?"
