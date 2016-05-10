@@ -54,6 +54,82 @@ class Deck
 	end
 end
 
+class Player
+	attr_accessor :hand, :winnings
+
+	def initialize
+		@hand = []
+		@winnings = 0
+	end
+	
+	def getScore(hand)
+		score = 0
+		
+		hand.each do |x|
+			score += x.getVal
+		end
+	
+		return score
+	end
+	
+	def getWinnings
+		return @winnings
+	end
+	
+	def setWinnings(bet)
+		@winnings = bet
+	end
+	
+	#Show hand of player
+	def turnPlayerHand(hand)
+		puts "Player's hand: "
+		
+		hand.each do |x|
+			x.to_s
+		end
+		
+		puts "\n"
+	end
+end
+
+
+class Dealer
+	attr_accessor :hand, :winnings
+
+	def initialize
+		@hand = []
+		@winnings = 0
+	end
+	
+	def getWinnings
+		return @winnings
+	end
+	
+	def getScore(hand)
+		score = 0
+		
+		hand.each do |x|
+			score += x.getVal
+		end
+		
+		return score
+	end
+	
+	def setWinnings(bet)
+		@winnings = bet
+	end
+	
+	def turnDealerHand(hand)
+		puts "Dealer's hand: "
+		
+		hand.each do |x|
+			x.to_s
+		end
+		
+		puts "\n"
+	end
+end
+
 #Determine value of each card
 def value(val)
 	if val == "K"
@@ -69,57 +145,120 @@ def value(val)
 	end
 end
 
-
-
 #Determine if hand is a blackjack
-def isBlackjack(hand)
-	total = 0
+def isBlackjack(dealer, player, bet)
 	
-	hand.each do |x|
-		total = total + x.getVal
-	end
-	
-	if total == 21
-		return true
+	if dealer.getScore(dealer.hand) == 21 && player.getScore(player.hand) == 21
+		puts "Its a tie! You both got blackjack!"
+		puts "Player's winnings: " + player.getWinnings.to_s
+		puts "Dealer's winnings: " + dealer.getWinnings.to_s
+		exit
+	elsif dealer.getScore(dealer.hand) == 21
+		puts "Blackjack! Dealer Wins!"
+		dealer.setWinnings(bet)
+		puts "Player's winnings: " + player.getWinnings.to_s
+		puts "Dealer's winnings: " + dealer.getWinnings.to_s
+		exit
+	elsif player.getScore(player.hand) == 21
+		puts "You've got a blackjack! Its the dealer's turn."
 	else
-		return false
+		return
 	end
 		
 end
 
-#Show hand of player
-def turnPlayerHand(hand)
-	score = 0
-	puts "Players hand: "
-	
-	hand.each do |x|
-		x.to_s
-		score += x.getVal
+def isPlayerBust(dealer, player, bet)
+	if player.getScore(player.hand) > 21
+		puts "You busted, scrub!"
+		dealer.setWinnings(bet)
+		puts "Player's winnings: " + player.getWinnings.to_s 
+		puts "Dealer's winnings: " + dealer.getWinnings.to_s 
+		exit
+	else
+		return
+	end
+end
+
+def isDealerBust(dealer, player, bet)
+	if dealer.getScore(dealer.hand) > 21
+		player.setWinnings(bet)
+		puts "Dealer busted, yo! You win!"
+		puts "Player's winnings: " + player.getWinnings.to_s
+		puts "Dealer's winnings: " + dealer.getWinnings.to_s
+		exit
+	else
+		return
+	end
+end
+
+def determineWinner(dealer, player, bet)
+	if dealer.getScore(dealer.hand) == player.getScore(player.hand)
+		puts "This a tie, yo!"
+		puts "Player's winnings: " + player.getWinnings.to_s
+		puts "Dealer's winnings: " + dealer.getWinnings.to_s
+	elsif dealer.getScore(dealer.hand) < player.getScore(player.hand)
+		puts "You Win!"
+		player.setWinnings(bet)
+		puts "Player's winnings: " + player.getWinnings.to_s
+		puts "Dealer's winnings: " + dealer.getWinnings.to_s
+	elsif dealer.getScore(dealer.hand) > player.getScore(player.hand)
+		puts "You Lose..."
+		puts "Player's winnings: " + player.getWinnings.to_s
+		dealer.setWinnings(bet)
+		puts "Dealer's winnings: " + dealer.getWinnings.to_s
 	end
 	
-	puts "Players current score: "
-	puts score
+	return
 end
 
 #create deck
 @deck = Deck.new
+@player = Player.new
+@dealer = Dealer.new
+@bet = 0
+
+puts "How much would you like to bet (50 - 500)?"
+@bet = gets
 
 #Initial hand of player and dealer
-2.times{@player << @deck.hit}
-2.times{@dealer << @deck.hit}
+2.times{@player.hand << @deck.hit}
+2.times{@dealer.hand << @deck.hit}
 
 #Show player's hand
-turnPlayerHand(@player)
+@player.turnPlayerHand(@player.hand)
+puts "The player's score is: \n" + @player.getScore(@player.hand).to_s + "\n\n"
 
-puts "Would you like to hit or stand?"
-choice = gets
+@dealer.turnDealerHand(@dealer.hand)
+puts "The dealer's score is: \n" + @dealer.getScore(@dealer.hand).to_s + "\n\n"
 
-#Keep hitting if player wants to
-while choice.chomp == "hit" do
-	# << pushes onto a stack
-	@player << @deck.hit
-	turnPlayerHand(@player)
-	
-	puts "Would you like to hit?"
-	gets(choice)
+isBlackjack(@dealer, @player, @bet) 
+
+if @player.getScore(@player.hand) != 21
+	puts "Would you like to hit or stand?"
+	choice = gets
+
+	#Keep hitting if player wants to
+	while choice.chomp == "hit" do
+		# << pushes onto a stack
+		@player.hand << @deck.hit
+		@player.turnPlayerHand(@player.hand)
+		puts "The player's score is: \n" + @player.getScore(@player.hand).to_s + "\n\n"
+		
+		isPlayerBust(@dealer, @player, @bet)
+		
+		puts "\nWould you like to hit or stand?"
+		choice = gets
+	end
 end
+
+while @dealer.getScore(@dealer.hand) < 16
+	@dealer.hand << @deck.hit
+	@dealer.turnDealerHand(@dealer.hand)
+	isDealerBust(@dealer, @player, @bet)
+end
+
+puts "\n"
+@dealer.turnDealerHand(@dealer.hand)
+puts "The dealer's score is: \n" + @dealer.getScore(@dealer.hand).to_s + "\n\n"
+
+determineWinner(@dealer, @player, @bet)
