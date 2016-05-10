@@ -30,16 +30,13 @@ public class DeckOfCards {
         deck = new Card[NOCARDS];
         currentCard=0;
         
-        //populate deck with Card objects
-        
+        //populate deck with Card object
         for(int i=0; i<deck.length; i++)
         {
             deck[i]= new Card(suits[i/13],faces[i%13], 0);
             int value = deck[i].getValue();
             deck[i].points = value;
-            
         }
-        
     }
     
     //shuffle deck of cards
